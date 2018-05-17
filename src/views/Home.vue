@@ -20,8 +20,16 @@
           <draggable class="section" v-model="selected" :options="{draggable:'.item', group:'segmentOptions'}">
 
             <div class="item" v-for="element in selected">
-              {{element.name}}
-              <input type="text" v-model="element.value" />
+              <div class="item-header">
+                <span>{{element.name}}</span>
+
+                <button type="button" @click="element.showEdit = !element.showEdit">
+                  <span title="close" v-show="element.showEdit">collapse segment &#x2191;</span>
+                  <span title="open" v-show="!element.showEdit">edit value &#x2193;</span>
+                </button>
+              </div>
+
+              <input type="text" v-model="element.value" v-show="element.showEdit" v-bind:placeholder="element.placeholder" />
             </div>
           </draggable>
 
@@ -59,16 +67,15 @@
     },
     created() {
       this.sections = [
-        { name: 'city', value: '', id: 1 },
-        { name: 'state/provence', value: '', id: 2 },
-        { name: 'country', value: '', id: 3 },
-        { name: 'hobbies', value: '', id: 4 },
-        { name: 'causes', value: '', id: 5 }
+        { name: 'city', value: '', id: 1, showEdit: true, placeholder: 'Chicago, Toronto' },
+        { name: 'state/provence', value: '', id: 2, showEdit: true, placeholder: 'Illinois, Ontario' },
+        { name: 'country', value: '', id: 3, showEdit: true, placeholder: 'Canada' },
+        { name: 'hobbies', value: '', id: 4, showEdit: true, placeholder: 'biking, hiking, puppy dogs' },
+        { name: 'causes', value: '', id: 5, showEdit: true, placeholder: 'ASPCA, homelessness' }
       ];
     },
     methods: {
       createRequest() {
-        console.log('amaking a requst');
         console.log(this.selected);
       }
     }
@@ -81,7 +88,8 @@
     max-width: 60em;
   }
 
-  .big-text-input {
+  .big-text-input,
+  .item input {
     font-size: 1.5em;
     padding: 10px;
     border: 1px var(--white2) solid;
@@ -90,7 +98,8 @@
     font-family: var(--mono-font);
   }
 
-  .big-text-input:focus {
+  .big-text-input:focus,
+  .item input:focus {
     outline: none;
     border-color: var(--pop3);
     background: var(--white1);
@@ -138,9 +147,21 @@
     margin-bottom: 0;
   }
 
-  .empty-selected {
-    text-align: center;
-    color: var(--black3);
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-content: baseline;
+  }
 
+  .item-header button {
+    padding: 1px 3px;
+    border: none;
+    font-size: 0.7em;
+  }
+
+  .item input {
+    font-size: 1em;
+    /*padding: 2px;*/
+    margin: 0.5em auto;
   }
 </style>
