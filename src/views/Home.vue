@@ -17,23 +17,23 @@
       <div class="step-two-columns">
         <div class="column column--selected">
           <h3>Selected</h3>
-          <draggable class="section" v-model="selected" :options="{draggable:'.item',group:'options'}">
-            <div class="item" v-for="element in selected" :key="element.id">
+          <draggable class="section" v-model="selected" :options="{draggable:'.item', group:'segmentOptions'}">
+
+            <div class="item" v-for="element in selected">
               {{element.name}}
               <input type="text" v-model="element.value" />
             </div>
-
-            <button type="button" class="selected-finish" v-bind:disabled="!selected.length" v-on:click="createRequest" slot="footer">Create Request</button>
           </draggable>
+
+          <button type="button" class="selected-finish" v-bind:disabled="!selected.length" v-on:click="createRequest">Create Request</button>
         </div>
 
         <div class="column column--options">
           <h3>Options</h3>
 
-          <draggable class="section" v-model="sections" :options="{draggable:'.item',group:'options'}">
-            <div class="item" v-for="element in sections" :key="element.id">
+          <draggable class="section" v-model="sections" :options="{draggable:'.item', group:'segmentOptions'}">
+            <div class="item" v-for="element in sections">
               {{element.name}}
-
             </div>
           </draggable>
         </div>
@@ -54,14 +54,17 @@
       return {
         statement: '',
         selected: [],
-        sections: [
-          { name: 'city', value: '', id: 0 },
-          { name: 'state/provence', value: '', id: 1 },
-          { name: 'country', value: '', id: 2 },
-          { name: 'hobbies', value: '', id: 3 },
-          { name: 'causes', value: '', id: 4 }
-        ]
+        sections: []
       }
+    },
+    created() {
+      this.sections = [
+        { name: 'city', value: '', id: 1 },
+        { name: 'state/provence', value: '', id: 2 },
+        { name: 'country', value: '', id: 3 },
+        { name: 'hobbies', value: '', id: 4 },
+        { name: 'causes', value: '', id: 5 }
+      ];
     },
     methods: {
       createRequest() {
@@ -75,6 +78,7 @@
 <style>
   .home {
     padding: 10px;
+    max-width: 60em;
   }
 
   .big-text-input {
@@ -94,17 +98,20 @@
 
   .step-two-columns {
     display: flex;
+    justify-content: space-between;
   }
 
-  .column {}
+  .column {
+    width: 48%;
+  }
 
   .column--selected {
-    width: 50%;
+    /*width: 50%;*/
   }
 
   .column--options {
-    width: 25%;
-    margin-left: auto;
+    /*width: 25%;*/
+    /*margin-left: auto;*/
   }
 
   .section {
@@ -112,13 +119,28 @@
     background: var(--white-enuff);
     padding: 20px;
     min-height: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
   }
 
   .selected-finish {
     background: var(--white-enuff);
-    margin-top: auto;
+    margin: 1em auto;
+  }
+
+  .item {
+    padding: 5px;
+    border: 1px var(--white3) solid;
+    border-radius: 3px;
+    margin-bottom: 0.5em;
+    font-family: var(--mono-font);
+  }
+
+  .item:last-of-type  {
+    margin-bottom: 0;
+  }
+
+  .empty-selected {
+    text-align: center;
+    color: var(--black3);
+
   }
 </style>
