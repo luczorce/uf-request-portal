@@ -16,3 +16,10 @@ button:focus {
 button.active {
   background: var(--pop1);
 }
+
+.small-button {
+  padding: 1px 3px;
+  border-color: var(--black4);
+  font-size: 0.7em;
+}
+  

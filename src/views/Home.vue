@@ -23,7 +23,7 @@
               <div class="item-header">
                 <span>{{element.name}}</span>
 
-                <button type="button" @click="element.showEdit = !element.showEdit">
+                <button type="button" class="small-button" @click="element.showEdit = !element.showEdit">
                   <span title="close" v-show="element.showEdit">collapse segment &#x2191;</span>
                   <span title="open" v-show="!element.showEdit">edit value &#x2193;</span>
                 </button>
@@ -33,7 +33,9 @@
             </div>
           </draggable>
 
-          <button type="button" class="selected-finish" v-bind:disabled="!selected.length" v-on:click="createRequest">Create Request</button>
+          <button type="button" class="selected-finish" v-bind:disabled="!selected.length" v-on:click="createRequest">Create Request</button><span v-if="sendingRequest">thinking...</span>
+
+          <p v-if="requestResponse">the request can be accessed with <code>{{requestResponse}}</code> <button class="small-button" @click="requestResponse = null">dismiss</button></p>
         </div>
 
         <div class="column column--options">
@@ -61,9 +63,11 @@
     },
     data: function() {
       return {
+        requestResponse: null,
         statement: '',
         selected: [],
-        sections: []
+        sections: [],
+        sendingRequest: false
       }
     },
     created() {
@@ -81,11 +85,18 @@
     },
     methods: {
       async createRequest() {
+        this.requestResponse = null;
+        this.sendingRequest = true;
+
         try {
           const response = await provider.makeRequest(this.createRequestBody());
           console.log(response);
+          
+          this.requestResponse = response.data.requestKey
         } catch (error) {
           console.log(error);
+        } finally {
+          this.sendingRequest = false;
         }
       },
       createRequestBody() {
@@ -171,12 +182,6 @@
     display: flex;
     justify-content: space-between;
     align-content: baseline;
-  }
-
-  .item-header button {
-    padding: 1px 3px;
-    border-color: var(--black4);
-    font-size: 0.7em;
   }
 
   .item input {
