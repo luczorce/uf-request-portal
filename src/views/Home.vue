@@ -52,6 +52,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import provider from '@/services/provider.js';
 
   export default {
     name: 'home',
@@ -67,16 +68,35 @@
     },
     created() {
       this.sections = [
-        { name: 'city', value: '', id: 1, showEdit: true, placeholder: 'Chicago, Toronto' },
-        { name: 'state/provence', value: '', id: 2, showEdit: true, placeholder: 'Illinois, Ontario' },
-        { name: 'country', value: '', id: 3, showEdit: true, placeholder: 'Canada' },
-        { name: 'hobbies', value: '', id: 4, showEdit: true, placeholder: 'biking, hiking, puppy dogs' },
-        { name: 'causes', value: '', id: 5, showEdit: true, placeholder: 'ASPCA, homelessness' }
+        // { name: 'city', nameKey: 'city', value: '', id: 1, showEdit: true, placeholder: 'Chicago, Toronto' },
+        { name: 'state/provence', nameKey: 'state', value: '', id: 2, showEdit: true, placeholder: 'Illinois, Ontario' },
+        { name: 'country', nameKey: 'country', value: '', id: 3, showEdit: true, placeholder: 'Canada' },
+        { name: 'hobbies', nameKey: 'hobbies', value: '', id: 4, showEdit: true, placeholder: 'biking, hiking, puppy dogs' },
+        { name: 'causes', nameKey: 'causes', value: '', id: 5, showEdit: true, placeholder: 'ASPCA, homelessness' }
       ];
+
+      this.selected = [
+        { name: 'city', nameKey: 'city', value: 'Chicago', id: 1, showEdit: true, placeholder: 'Chicago, Toronto' }
+      ]
     },
     methods: {
-      createRequest() {
-        console.log(this.selected);
+      async createRequest() {
+        try {
+          const response = await provider.makeRequest(this.createRequestBody());
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      createRequestBody() {
+        let body = {};
+        
+        this.selected.forEach((segment) => {
+          // TODO do any singular sections need to just be Strings?
+          body[segment.nameKey] = segment.value.split(', ');
+        });
+
+        return body;
       }
     }
   }
@@ -155,7 +175,7 @@
 
   .item-header button {
     padding: 1px 3px;
-    border: none;
+    border-color: var(--black4);
     font-size: 0.7em;
   }
 
