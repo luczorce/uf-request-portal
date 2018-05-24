@@ -1,5 +1,5 @@
 <template>
-  <div class="home" role="main">
+  <div class="page page-home" role="main">
     <h1>Create a request</h1>
     <p>Customise your segment request. Piece together attributes of a segment of the population that you would like to populate for testing and to reach out to.</p>
 
@@ -114,11 +114,6 @@
 </script>
 
 <style>
-  .home {
-    padding: 10px;
-    max-width: 60em;
-  }
-
   .big-text-input,
   .item input {
     font-size: 1.5em;

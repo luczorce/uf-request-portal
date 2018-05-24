@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div class="nav" role="navigation">
-      <router-link :to="{name: 'home'}">Create Requests</router-link>
-      <router-link :to="{name: 'requests'}">View Requests</router-link>
-
+      <router-link :to="{name: 'home'}" exact>Create Requests</router-link>
+      <router-link  :to="{name: 'requests', params: {requestKey: null}}" :class="{'router-link-current': $route.name === 'requests'}">View Requests</router-link>
+      
       <span class="faux-company">Welcome back, Brand B!</span>
     </div>
     <router-view/>
@@ -23,7 +23,8 @@
     color: var(--black2);
   }
 
-  .nav .router-link-exact-active {
+  .nav .router-link-exact-active,
+  .nav .router-link-current {
     background: var(--pop1);
     color: var(--black);
     text-decoration: none;

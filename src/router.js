@@ -19,7 +19,7 @@ export default new Router({
       component: About
     },
     {
-      path: '/requests',
+      path: '/requests/:requestKey?',
       name: 'requests',
       component: ViewRequests
     }

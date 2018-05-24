@@ -1,15 +1,27 @@
 <template>
   <div class="requests" role="main">
-    <h1>View your requests</h1>
+    <requestViewer :currentRequest="currentRequest"/>
     
   </div>
 </template>
 
 <script>
+  import requestViewer from '@/components/requestViewer.vue';
+
   export default {
     name: 'viewRequests',
     components: {
-      
+      requestViewer
+    },
+    data: function() {
+      return {
+        currentRequest: ''
+      }
+    },
+    watch: {
+      $route(to, from) {
+        this.currentRequest = to.params.requestKey;
+      }
     }
   }
 </script>
