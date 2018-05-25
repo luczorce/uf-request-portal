@@ -1,6 +1,6 @@
 <template>
   <div class="requests" role="main">
-    <requestViewer :currentRequest="currentRequest"/>
+    <requestViewer :currentRequest="currentRequest" v-on:updateCurrentRequest="updateCurrentRequest"/>
     
   </div>
 </template>
@@ -21,6 +21,16 @@
     watch: {
       $route(to, from) {
         this.currentRequest = to.params.requestKey;
+      }
+    },
+    methods: {
+      updateCurrentRequest(requestKey) {
+        this.currentRequest = requestKey;
+        this.$router.push({
+          name: 'requests',
+          params: {
+            requestKey: requestKey
+          }});
       }
     }
   }
