@@ -30,11 +30,6 @@ function getRequestResponses(requestKey) {
 
 function makeRequest(body) {
   const url = `${REQUESTS_URL}/request`;
-  // const options = {
-  //   headers: {
-  //     'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
-  //   }
-  // }
 
   return new Promise((resolve, reject) => {
     axios.post(url, body)

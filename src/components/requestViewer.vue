@@ -5,6 +5,7 @@
     <div class="requests-wrapper">
       <ul class="requests-list">
         <li>empty, look them up TODO</li>
+        <li><button type="button" v-bind:disabled="waiting.individual" @click="updateCurrentRequest('ewer321')">ewer321</button></li>
         <li @click="updateCurrentRequest('ewer321')">ewer321</li>
         <li @click="updateCurrentRequest('asd654321356454')">asd654321356454</li>
         <li @click="updateCurrentRequest('4vQcSL75m5bngyqaveMrtE')">4vQcSL75m5bngyqaveMrtE</li>
@@ -14,6 +15,8 @@
       <div class="current-request">        
         <p v-if="!waiting.individual && !Boolean(requestData)">select a request to look up information</p>
         <p v-if="waiting.individual && !Boolean(requestData)">loading request data...</p>
+
+        <p v-if="Boolean(error)">Error with getting data on the request</p>
 
         <div v-if="Boolean(requestData)">
           <p>Pending: <code>{{requestData.pending}}</code></p>
@@ -57,11 +60,27 @@
     },
     data: function() {
       return {
-        // current: NOTE gets defined in the computed section
+        // current: gets defined in the computed section, but should be considered in this data section
         requestData: null,
         waiting: {
           list: false,
           individual: false
+        },
+        error: null
+      }
+    },
+    computed: {
+      current: function() {
+        return this.currentRequest;
+      }
+    },
+    watch: {
+      // NOTE we include the watch for the `current` value as well as the 'computed'
+      // the computed handles updating the value solely
+      // the watch handles the behavior for the change
+      current: function() {
+        if (Boolean(this.current) && this.current.length) {
+          this.getDataForRequest();
         }
       }
     },
@@ -70,36 +89,26 @@
         this.getDataForRequest();
       }
     },
-    computed: {
-      current: function() {
-        return this.currentRequest;
-      }
-    },
     methods: {
       getDataForRequest() {
-        // TODO ask the provider for the data on the certain request
-        console.log('getting request data');
-
         this.waiting.individual = true;
+        this.requestData = null;
+        this.error = null;
+
         provider.getRequestResponses(this.current)
           .then(results => {
             this.requestData = results.data;
-            console.log(results);
           }, error => {
             console.log('error getting the responses for the request');
-            console.log(error);
+            this.error = error;
           })
           .then(() => {
-            console.log('this got called without any returns yeah!');
             this.waiting.individual = false;
           });
       },
       updateCurrentRequest(requestKey) {
         // this handles the update to the view component
         this.$emit('updateCurrentRequest', requestKey);
-
-        // this handles updating this component with the requested data
-        this.getDataForRequest();
       }
     }
   }
