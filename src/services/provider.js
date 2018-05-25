@@ -4,20 +4,37 @@ const REQUESTS_URL = process.env.VUE_APP_REQUESTS_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const RequestsProvider = {
-  makeRequest: makeRequest
+  makeRequest: makeRequest,
+  getRequestResponses: getRequestResponses
 }
 
 export default RequestsProvider;
 
 //////
 
+function getRequestResponses(requestKey) {
+  const url = `${REQUESTS_URL}/response/${requestKey}`;
+
+  return new Promise((resolve, reject) => {
+    axios.get(url)
+      .then(response => {
+        if (response.status === 200) {
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      })
+      .catch(e => reject(e));
+  })
+}
+
 function makeRequest(body) {
   const url = `${REQUESTS_URL}/request`;
-  const options = {
-    headers: {
-      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
-    }
-  }
+  // const options = {
+  //   headers: {
+  //     'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+  //   }
+  // }
 
   return new Promise((resolve, reject) => {
     axios.post(url, body)
@@ -25,9 +42,9 @@ function makeRequest(body) {
         if (response.status === 200) {
           resolve(response);
         } else {
-          reject(response)
+          reject(response);
         }
       })
       .catch(e => reject(e));
-  })
+  });
 }
