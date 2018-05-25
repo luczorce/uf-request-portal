@@ -1,6 +1,6 @@
 <template>
   <div class="page page-home" role="main">
-    <h1>View requests <span>{{current}}</span></h1>
+    <h1>View requests <code class="current-request-key">{{current}}</code></h1>
     
     <div class="requests-wrapper">
       <ul class="requests-list section">
@@ -28,16 +28,11 @@
             collecting responses on {{requestData.finished | convertToDate}}
           </p>
           
-          <h4>Attributes to match</h4>
-          <dl>
-            <template v-for="attr in requestData.body">
-            <dt>{{attr.key}}</dt>
-            <dd>{{attr.value.join(', ')}}</dd>
-            </template>
-          </dl>
+          <requestAttributes v-bind:attributes="requestData.body" />
 
-          <h4>Responses <em>(as device keys)</em></h4>
+          <h4 class="section-header">Responses <em>(as device keys)</em></h4>
           <ul>
+            <li v-if="!requestData.responses.length">no responses!</li>
             <li v-for="res in requestData.responses"><code>{{res.device_key}}</code></li>
           </ul>
         </div>
@@ -47,11 +42,13 @@
 </template>
 
 <script>
+  import requestAttributes from '@/components/requestAttributes.vue';
   import provider from '@/services/provider.js';
   import moment from 'moment';
 
   export default {
     name: 'requestViewer',
+    components: { requestAttributes },
     props: {
       currentRequest: String
     },
@@ -114,25 +111,16 @@
       getAllRequestKeys() {
         this.waiting.list = true;
         
-        // TODO these are the test one's I've added my local db
-        // add the functionality to our server
-        this.requestKeys = [
-          'KobyZAgep5r5cg2qma9PC9',
-          '1JYcditSRK35myx3S6jQfr',
-          'CEGtiDWqDLkVzMP3PPUdWw',
-          'YQ2zaiPjgjfYm6Az8fo6bF',
-          'XqRSM1tiE9QjpGRTDFfR9S',
-          'D1cf8Avq4Efi2Fu1Rh8BZ1',
-          'E3VHTc1fpZ1yVGrKjWvUXq',
-          'SPTdLFQbmPB9JZPWEeHXQB',
-          '4vQcSL75m5bngyqaveMrtE',
-          'XKXtqpaovstAnT5sEGMNci',
-          'BipP4Ntd2cmFcCfWvXd7ty',
-          'XUooTvPfN9EFyUb2FwprjC',
-          '9mFakPWiXuq9tZGKMpg1p1'
-        ];
-        this.waiting.list = false;
-
+        provider.getAllRequests()
+          .then(results => {
+            this.requestKeys = results.requests.map(r => r.request_key);
+          }, error => {
+            console.log('error getting the all the requests');
+            this.error = error;
+          })
+          .then(() => {
+            this.waiting.list = false;
+          });
       },
       updateCurrentRequest(requestKey) {
         // this handles the update to the view component
@@ -143,6 +131,15 @@
 </script>
 
 <style>
+  .current-request-key {
+    font-family: var(--mono-font);
+    color: var(--black2);
+    font-size: 0.5em;
+    background: var(--white1);
+    padding: 2px;
+    border-radius: 3px;
+  }
+
   .requests-wrapper {
     display: flex;
   }
