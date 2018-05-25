@@ -35,7 +35,7 @@
 
           <button type="button" class="selected-finish" v-bind:disabled="!selected.length" v-on:click="createRequest">Create Request</button><span v-if="sendingRequest">thinking...</span>
 
-          <p v-if="requestResponse">the request can be accessed with <code>{{requestResponse}}</code> <button class="small-button" @click="requestResponse = null">dismiss</button></p>
+          <p v-if="requestResponse">Details on the request, including it's responses, can be <router-link :to="{name: 'requests', params: {requestKey: requestResponse}}">accessed with <code>{{requestResponse}}</code></router-link> <button class="small-button" @click="requestResponse = null">dismiss</button></p>
         </div>
 
         <div class="column column--options">

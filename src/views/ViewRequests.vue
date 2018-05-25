@@ -18,6 +18,11 @@
         currentRequest: ''
       }
     },
+    created() {
+      if (this.$route.params.requestKey) {
+        this.currentRequest = this.$route.params.requestKey
+      }
+    },
     watch: {
       $route(to, from) {
         this.currentRequest = to.params.requestKey;
