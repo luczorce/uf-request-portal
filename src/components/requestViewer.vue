@@ -85,7 +85,7 @@
       }
     },
     created() {
-      if (this.current.length) {
+      if (Boolean(this.current) && this.current.length) {
         this.getDataForRequest();
       }
 
